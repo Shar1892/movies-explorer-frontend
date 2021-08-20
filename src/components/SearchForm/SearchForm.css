@@ -44,6 +44,11 @@
 	overflow: hidden;
 }
 
+.search__form-input:focus {
+	background-color: #f9f9f9;
+	border-radius: 8px;
+}
+
 .search__form-button {
 	width: 59px;
 	height: 34px;
