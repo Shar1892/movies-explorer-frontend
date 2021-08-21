@@ -1,0 +1,26 @@
+.movies-card-list {
+	width: 100%;
+	padding: 40px 10px 30px 10px;
+	display: grid;
+	justify-content: center;
+	align-items: center;
+	grid-template-columns: 1fr;
+	gap: 16px;
+}
+
+@media screen and (min-width: 768px) {
+	.movies-card-list {
+		padding: 70px 30px 30px 30px;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 36px 30px;
+	}
+}
+
+@media screen and (min-width: 1280px) {
+	.movies-card-list {
+		width: 1140px;
+		padding: 70px 0 30px 0;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 30px 24px;
+	}
+}
