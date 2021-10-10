@@ -219,12 +219,14 @@ function App() {
 						});
 						if (foundShortMovies.length) {
 							setMovies(foundShortMovies);
+							setNotFound(false);
 						} else {
 							setNotFound(true);
 							setMovies([]);
 						}
 					} else {
 						setMovies(JSON.parse(localStorage.getItem('movies')));
+						setNotFound(false);
 					}
 				} else {
 					setNotFound(true);
@@ -256,12 +258,14 @@ function App() {
 				});
 				if (serchShortSavedMovies.length) {
 					setSavedMovies(serchShortSavedMovies);
+					setNotFound(false);
 				} else {
 					setSavedMovies([]);
 					setNotFound(true);
 				}
 			} else {
 				setSavedMovies(serchSavedMovies);
+				setNotFound(false);
 			}
 		} else {
 			setSavedMovies([]);

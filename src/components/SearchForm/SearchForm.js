@@ -53,7 +53,7 @@ const SearchForm = ({
 			<form
 				className='search__form'
 				onSubmit={isSaved ? handleSearchSavedMovies : handleSearchMovies}
-				novalidate
+				noValidate
 			>
 				<div className='search__input-container'>
 					<img src={search__icon} alt='Поиск' className='search__icon' />

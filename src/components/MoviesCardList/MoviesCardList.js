@@ -33,6 +33,19 @@ const MoviesCardList = ({
 		}
 	});
 
+	const isNotEmptySavedMoviesList = () => {
+		let savadMoviesList = JSON.parse(localStorage.getItem('savedMovies'));
+		if (savadMoviesList) {
+			if (savadMoviesList.length) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	};
+
 	const viewCards = movies.slice(0, startCardsValue);
 
 	const handleChangeWindowWigth = () => {
@@ -82,9 +95,7 @@ const MoviesCardList = ({
 
 			<p
 				className={`movies-card-list__message ${
-					JSON.parse(localStorage.getItem('savedMovies')).length &&
-					notFound &&
-					!isLoading
+					isNotEmptySavedMoviesList() && notFound && !isLoading
 						? ''
 						: 'movies-card-list__message_hidden'
 				}`}
@@ -94,7 +105,7 @@ const MoviesCardList = ({
 
 			<p
 				className={`movies-card-list__message ${
-					isSaved && !JSON.parse(localStorage.getItem('savedMovies')).length
+					isSaved && !isNotEmptySavedMoviesList()
 						? ''
 						: 'movies-card-list__message_hidden'
 				}`}
@@ -107,7 +118,7 @@ const MoviesCardList = ({
 					<MoviesCard
 						isSaved={isSaved}
 						movie={item}
-						key={item.id}
+						key={isSaved ? item.movieId : item.id}
 						handleSaveMovie={handleSaveMovie}
 						handleDeleteMovie={handleDeleteMovie}
 					/>
