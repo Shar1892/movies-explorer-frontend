@@ -31,6 +31,7 @@ const Login = ({onLogin, errorMessage, onClear}) => {
 							value={values.email || ''}
 							onChange={handleChange}
 							maxLength='40'
+							pattern='[a-z0-9_-]+@[a-z0-9-]+\.[a-z]{2,6}'
 							required
 						></input>
 						<span className='register__input-error register__email-input-error'>

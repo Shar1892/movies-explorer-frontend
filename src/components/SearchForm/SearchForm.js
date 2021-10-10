@@ -12,6 +12,15 @@ const SearchForm = ({
 	isShort,
 }) => {
 	const [currentSearchQuery, setCurrentSearchQuery] = useState('');
+	const [isSearchValid, setIsSearchValid] = useState(true);
+
+	const checkFilledSearch = (search) => {
+		if (search) {
+			return true;
+		} else {
+			return false;
+		}
+	};
 
 	const handleInputChange = (evt) => {
 		setCurrentSearchQuery(evt.target.value);
@@ -20,13 +29,23 @@ const SearchForm = ({
 	const handleSearchMovies = (evt) => {
 		evt.preventDefault();
 
-		searchMovies(currentSearchQuery);
+		if (checkFilledSearch(currentSearchQuery)) {
+			searchMovies(currentSearchQuery);
+			setIsSearchValid(true);
+		} else {
+			setIsSearchValid(false);
+		}
 	};
 
 	const handleSearchSavedMovies = (evt) => {
 		evt.preventDefault();
 
-		searchSavedMovies(currentSearchQuery);
+		if (checkFilledSearch(currentSearchQuery)) {
+			searchSavedMovies(currentSearchQuery);
+			setIsSearchValid(true);
+		} else {
+			setIsSearchValid(false);
+		}
 	};
 
 	return (
@@ -34,6 +53,7 @@ const SearchForm = ({
 			<form
 				className='search__form'
 				onSubmit={isSaved ? handleSearchSavedMovies : handleSearchMovies}
+				novalidate
 			>
 				<div className='search__input-container'>
 					<img src={search__icon} alt='Поиск' className='search__icon' />
@@ -44,12 +64,18 @@ const SearchForm = ({
 						className='search__form-input'
 						onChange={handleInputChange}
 						value={currentSearchQuery}
-						required
 					/>
 					<button className='search__form-button' type='submit'>
 						Найти
 					</button>
 				</div>
+				<span
+					className={`search__error-message ${
+						isSearchValid ? 'search__error-message_hidden' : ''
+					}`}
+				>
+					Нужно ввести ключевое слово
+				</span>
 				<div className='search__сheckbox-container'>
 					<FilterCheckbox onChange={handleShortMovies} isShort={isShort} />
 				</div>

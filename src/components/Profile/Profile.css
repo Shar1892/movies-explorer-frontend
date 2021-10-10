@@ -110,6 +110,17 @@
 	-webkit-font-smoothing: antialiased;
 }
 
+.profile__form-message {
+	margin: 0;
+	font-size: 11px;
+	line-height: 13px;
+	color: #000000;
+	font-family: 'inter';
+	font-style: normal;
+	font-weight: 500;
+	-webkit-font-smoothing: antialiased;
+}
+
 .profile__menu {
 	width: 100%;
 	list-style: none;

@@ -26,11 +26,13 @@ function App() {
 	const [savedMovies, setSavedMovies] = useState([]);
 	const [notFound, setNotFound] = useState(false);
 	const [isShort, setIsShort] = useState(false);
+	const [isShortSavedMovie, setIsShortSavedMovie] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [email, setEmail] = useState('');
 	const [isError, setIsError] = useState(false);
+	const [isSuccessfulChange, setIsSuccessfulChange] = useState(false);
 
-	const [editProfileErrorMessage, setEditProfileErrorMessage] = useState('');
+	const [editProfileMessage, setEditProfileMessage] = useState('');
 	const [registerErrorMessage, setRegisterErrorMessage] = useState('');
 	const [loginErrorMessage, setLoginErrorMessage] = useState('');
 
@@ -42,7 +44,7 @@ function App() {
 				.then(([userData, allSavedMovies]) => {
 					setLoggedIn(true);
 					setCurrentUser({...userData});
-					history.push('/');
+					history.push('/movies');
 					setEmail(userData.email);
 
 					const currentUserSevedMovies = allSavedMovies.filter((movie) => {
@@ -75,7 +77,13 @@ function App() {
 			})
 			.catch((err) => {
 				console.log(err);
-				setLoginErrorMessage(err);
+				if (err === 400) {
+					setRegisterErrorMessage('Указаны некоректные данные пользователя.');
+				} else if (err === 401) {
+					setRegisterErrorMessage('Пользователь не найден.');
+				} else {
+					setRegisterErrorMessage('Что-то пошло не так.');
+				}
 			});
 	};
 
@@ -84,12 +92,19 @@ function App() {
 			.register(name, email, password)
 			.then((data) => {
 				if (data) {
-					history.push('/signin');
+					onLogin(email, password);
+					history.push('/movies');
 				}
 			})
 			.catch((err) => {
 				console.log(err);
-				setRegisterErrorMessage(err);
+				if (err === 400) {
+					setRegisterErrorMessage('Указаны некоректные данные пользователя.');
+				} else if (err === 409) {
+					setRegisterErrorMessage('Такой пользователь уже существует.');
+				} else {
+					setRegisterErrorMessage('Что-то пошло не так.');
+				}
 			});
 	};
 
@@ -98,35 +113,85 @@ function App() {
 			.setUserData(name, email)
 			.then((data) => {
 				setCurrentUser({...data});
+				setEditProfileMessage('Профиль обновлен.');
+				setIsSuccessfulChange(true);
 			})
 			.catch((err) => {
-				setEditProfileErrorMessage(err);
 				console.log(err);
+				setIsSuccessfulChange(false);
+				if (err === 400) {
+					setEditProfileMessage('Указаны некоректные данные пользователя.');
+				} else {
+					setEditProfileMessage('Что-то пошло не так.');
+				}
 			});
 	};
 
 	const clearAllErrorMessages = () => {
 		setRegisterErrorMessage('');
 		setLoginErrorMessage('');
-		setEditProfileErrorMessage('');
+		setEditProfileMessage('');
+		setIsSuccessfulChange(false);
 	};
 
 	const handleShortMovies = (evt) => {
 		setIsShort(evt.target.checked);
+
+		let foundMovies = JSON.parse(localStorage.getItem('movies'));
+
+		if (evt.target.checked) {
+			let foundShortMovies = [];
+			foundMovies.forEach((movie) => {
+				if (movie.duration <= 40) {
+					foundShortMovies.push(movie);
+				}
+			});
+			if (foundShortMovies.length) {
+				setMovies(foundShortMovies);
+			} else {
+				setNotFound(true);
+				setMovies([]);
+			}
+		} else {
+			setMovies(foundMovies);
+			setNotFound(false);
+		}
+	};
+
+	const handleShortSavedMovies = (evt) => {
+		setIsShortSavedMovie(evt.target.checked);
+		const serchSavedMovies = JSON.parse(
+			localStorage.getItem('serchSaveMovies')
+		);
+
+		if (evt.target.checked) {
+			let serchShortSavedMovies = [];
+			serchSavedMovies.forEach((movie) => {
+				if (movie.duration <= 40) {
+					serchShortSavedMovies.push(movie);
+				}
+			});
+			if (serchShortSavedMovies.length) {
+				setSavedMovies(serchShortSavedMovies);
+			} else {
+				setSavedMovies([]);
+				setNotFound(true);
+			}
+		} else {
+			setSavedMovies(serchSavedMovies);
+			setNotFound(false);
+		}
 	};
 
 	const handleSearchMovies = (movies, keyword) => {
 		let foundMovies = [];
 
+		let lowerKeyword = keyword.toLowerCase();
+
 		movies.forEach((movie) => {
-			if (~movie.nameRU.indexOf(keyword)) {
-				if (isShort) {
-					if (movie.duration <= 40) {
-						foundMovies.push(movie);
-					}
-				} else {
-					foundMovies.push(movie);
-				}
+			let lowerMovieName = movie.nameRU.toLowerCase();
+			if (~lowerMovieName.indexOf(lowerKeyword)) {
+				foundMovies.push(movie);
 			}
 		});
 
@@ -145,10 +210,26 @@ function App() {
 
 				if (foundMovies.length) {
 					localStorage.setItem('movies', JSON.stringify(foundMovies));
-					setMovies(JSON.parse(localStorage.getItem('movies')));
+					if (isShort) {
+						let foundShortMovies = [];
+						foundMovies.forEach((movie) => {
+							if (movie.duration <= 40) {
+								foundShortMovies.push(movie);
+							}
+						});
+						if (foundShortMovies.length) {
+							setMovies(foundShortMovies);
+						} else {
+							setNotFound(true);
+							setMovies([]);
+						}
+					} else {
+						setMovies(JSON.parse(localStorage.getItem('movies')));
+					}
 				} else {
 					setNotFound(true);
 					setMovies([]);
+					localStorage.setItem('movies', []);
 				}
 			})
 			.catch((err) => {
@@ -164,7 +245,29 @@ function App() {
 		const savedMovies = JSON.parse(localStorage.getItem('savedMovies'));
 		const serchSavedMovies = handleSearchMovies(savedMovies, keyword);
 
-		setSavedMovies(serchSavedMovies);
+		if (serchSavedMovies.length) {
+			localStorage.setItem('serchSaveMovies', JSON.stringify(serchSavedMovies));
+			if (isShortSavedMovie) {
+				let serchShortSavedMovies = [];
+				serchSavedMovies.forEach((movie) => {
+					if (movie.duration <= 40) {
+						serchShortSavedMovies.push(movie);
+					}
+				});
+				if (serchShortSavedMovies.length) {
+					setSavedMovies(serchShortSavedMovies);
+				} else {
+					setSavedMovies([]);
+					setNotFound(true);
+				}
+			} else {
+				setSavedMovies(serchSavedMovies);
+			}
+		} else {
+			setSavedMovies([]);
+			setNotFound(true);
+			localStorage.setItem('serchSaveMovies', []);
+		}
 	};
 
 	const saveMovie = (movie) => {
@@ -245,7 +348,8 @@ function App() {
 						<Profile
 							onSignOut={onSignOut}
 							onUpdateUser={handleUpdateUser}
-							errorMessage={editProfileErrorMessage}
+							isSuccessfulChange={isSuccessfulChange}
+							message={editProfileMessage}
 						/>
 					</ProtectedRoute>
 					<ProtectedRoute path='/movies' isLogin={loggedIn}>
@@ -268,9 +372,9 @@ function App() {
 						<SavedMovies
 							movies={savedMovies}
 							notFound={notFound}
-							isShort={isShort}
+							isShortSavedMovie={isShortSavedMovie}
 							searchSavedMovies={searchSavedMovies}
-							handleShortMovies={handleShortMovies}
+							handleShortSavedMovies={handleShortSavedMovies}
 							handleDeleteMovie={deleteMovie}
 						/>
 						<Footer />

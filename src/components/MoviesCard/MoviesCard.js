@@ -84,7 +84,11 @@ const MoviesCard = ({isSaved, movie, handleSaveMovie, handleDeleteMovie}) => {
 					></button>
 				)}
 			</div>
-			<a href={isSaved ? movie.trailer : movie.trailerLink}>
+			<a
+				href={isSaved ? movie.trailer : movie.trailerLink}
+				target='_blank'
+				rel='noreferrer'
+			>
 				<img
 					className='movies-card__img'
 					src={isSaved ? movie.image : movieProfile.image}

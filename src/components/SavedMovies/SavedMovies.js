@@ -5,16 +5,16 @@ const SavedMovies = ({
 	movies,
 	notFound,
 	handleDeleteMovie,
-	handleShortMovies,
 	searchSavedMovies,
-	isShort,
+	handleShortSavedMovies,
+	isShortSavedMovie,
 }) => {
 	return (
 		<>
 			<SearchForm
-				handleShortMovies={handleShortMovies}
+				handleShortMovies={handleShortSavedMovies}
 				searchSavedMovies={searchSavedMovies}
-				isShort={isShort}
+				isShort={isShortSavedMovie}
 				isSaved={true}
 			/>
 			<MoviesCardList

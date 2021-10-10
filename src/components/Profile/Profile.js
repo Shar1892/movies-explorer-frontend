@@ -1,18 +1,37 @@
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useState} from 'react';
 
 import './Profile.css';
 import {useFormWithValidation} from '../../utils/useFormWithValidation';
 import {CurrentUserContext} from '../../contexts/CurrentUserContext';
 
-const Profile = ({onSignOut, onUpdateUser, errorMessage}) => {
+const Profile = ({onSignOut, onUpdateUser, isSuccessfulChange, message}) => {
 	const {values, setValues, handleChange, errors, isFormValid} =
 		useFormWithValidation();
+
+	const [isSubmitButtonDisebled, setIsSubmitButtonDisebled] = useState(true);
 
 	const currentUser = useContext(CurrentUserContext);
 
 	useEffect(() => {
 		setValues(currentUser);
 	}, [currentUser, setValues]);
+
+	useEffect(() => {
+		setIsSubmitButtonDisebled(true);
+		if (
+			currentUser.name !== values.name ||
+			currentUser.email !== values.email
+		) {
+			setIsSubmitButtonDisebled(false);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		currentUser.name,
+		currentUser.email,
+		values.name,
+		values.email,
+		isSuccessfulChange,
+	]);
 
 	const handleSubmit = (evt) => {
 		evt.preventDefault();
@@ -56,6 +75,7 @@ const Profile = ({onSignOut, onUpdateUser, errorMessage}) => {
 									value={values.email || ''}
 									onChange={handleChange}
 									maxLength='40'
+									pattern='[a-z0-9_-]+@[a-z0-9-]+\.[a-z]{2,6}'
 									required
 								></input>
 								<span className='profile__input-error profile__email-input-error'>
@@ -64,14 +84,22 @@ const Profile = ({onSignOut, onUpdateUser, errorMessage}) => {
 							</div>
 						</div>
 					</div>
-					<span className='profile__input-error profile__form-error'>
-						{errorMessage}
+					<span
+						className={`${
+							isSuccessfulChange
+								? 'profile__form-message'
+								: 'profile__input-error profile__form-error'
+						}`}
+					>
+						{message}
 					</span>
 					<div className='profile__menu'>
 						<button
 							type='submit'
 							className={`profile__button profile__button_type_simple ${
-								isFormValid ? '' : 'profile__button_type_disabled'
+								isFormValid && !isSubmitButtonDisebled
+									? ''
+									: 'profile__button_type_disabled'
 							}`}
 						>
 							Редактировать

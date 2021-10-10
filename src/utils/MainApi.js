@@ -12,13 +12,12 @@ export const register = (name, email, password) => {
 			password: password,
 			email: email,
 		}),
-	})
-		.then((res) => {
-			if (res.ok) {
-				return res.json();
-			}
-		})
-		.catch((err) => Promise.reject(err));
+	}).then((res) => {
+		if (res.ok) {
+			return res.json();
+		}
+		return Promise.reject(res.status);
+	});
 };
 
 export const authorize = (email, password) => {
@@ -37,15 +36,14 @@ export const authorize = (email, password) => {
 			if (res.ok) {
 				return res.json();
 			}
-			return Promise.reject(`Ошибка: ${res.status} - ${res.statusText}`);
+			return Promise.reject(res.status);
 		})
 		.then((data) => {
 			if (data.token) {
 				localStorage.setItem('jwt', data.token);
 			}
 			return data;
-		})
-		.catch((err) => Promise.reject(err));
+		});
 };
 
 export const getUser = () => {

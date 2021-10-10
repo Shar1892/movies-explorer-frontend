@@ -82,7 +82,9 @@ const MoviesCardList = ({
 
 			<p
 				className={`movies-card-list__message ${
-					!movies.length && notFound && !isLoading
+					JSON.parse(localStorage.getItem('savedMovies')).length &&
+					notFound &&
+					!isLoading
 						? ''
 						: 'movies-card-list__message_hidden'
 				}`}
@@ -92,7 +94,9 @@ const MoviesCardList = ({
 
 			<p
 				className={`movies-card-list__message ${
-					isSaved && !movies.length ? '' : 'movies-card-list__message_hidden'
+					isSaved && !JSON.parse(localStorage.getItem('savedMovies')).length
+						? ''
+						: 'movies-card-list__message_hidden'
 				}`}
 			>
 				Нет избранных фильмов
