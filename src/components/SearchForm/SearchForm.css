@@ -64,6 +64,25 @@
 	-webkit-font-smoothing: antialiased;
 }
 
+.search__form-button:hover {
+	cursor: pointer;
+}
+
+.search__error-message {
+	margin: 0;
+	font-size: 10px;
+	line-height: 12px;
+	color: #ee3465;
+	font-family: 'inter';
+	font-style: normal;
+	font-weight: normal;
+	-webkit-font-smoothing: antialiased;
+}
+
+.search__error-message_hidden {
+	display: none;
+}
+
 .search__сheckbox-container {
 	width: 100%;
 	display: flex;

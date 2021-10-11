@@ -3,11 +3,11 @@ import './Header.css';
 
 import Navigation from './Navigation/Navigation';
 
-const Header = ({isLogin}) => {
+const Header = ({isLogin, email}) => {
 	return (
 		<header className='header'>
 			<Logo />
-			<Navigation isLogin={isLogin} />
+			<Navigation isLogin={isLogin} email={email}/>
 		</header>
 	);
 };

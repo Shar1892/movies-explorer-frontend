@@ -2,15 +2,35 @@ import './Movies.css';
 import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 
-const Movies = () => {
+const Movies = ({
+	movies,
+	notFound,
+	searchMovies,
+	isError,
+	handleShortMovies,
+	handleSaveMovie,
+	handleDeleteMovie,
+	isShort,
+	isLoading,
+}) => {
 	return (
-		<section className='movies'>
-			<SearchForm />
-			<MoviesCardList isSaved={false} />
-			<button className='movies__more' type='button'>
-				Ещё
-			</button>
-		</section>
+		<>
+			<SearchForm
+				searchMovies={searchMovies}
+				isSaved={false}
+				handleShortMovies={handleShortMovies}
+				isShort={isShort}
+			/>
+			<MoviesCardList
+				isSaved={false}
+				movies={movies}
+				notFound={notFound}
+				isError={isError}
+				isLoading={isLoading}
+				handleSaveMovie={handleSaveMovie}
+				handleDeleteMovie={handleDeleteMovie}
+			/>
+		</>
 	);
 };
 

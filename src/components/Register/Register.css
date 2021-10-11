@@ -15,10 +15,12 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
+	margin-bottom: 80px;
 }
 
 .register__title {
-	margin: 50px 0 80px 0;
+	margin: 0;
+	margin-top: 50px;
 	font-size: 24px;
 	line-height: 29px;
 	color: #000000;
@@ -34,7 +36,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	align-items: center;
+	align-items: flex-start;
 }
 
 .register__inputs-container {
@@ -123,6 +125,16 @@
 	cursor: pointer;
 }
 
+.register__button_disabled {
+	background-color: #e8e8e8;
+	transition: none !important;
+}
+
+.register__button_disabled:hover {
+	opacity: 1;
+	cursor: default;
+}
+
 .register__button_margin_singup {
 	margin-top: 0;
 }
@@ -178,10 +190,11 @@
 
 	.register__title-container {
 		align-items: flex-start;
+		margin-bottom: 40px;
 	}
 
 	.register__title {
-		margin: 40px 0;
+		margin-top: 40px;
 	}
 
 	.register__form {
